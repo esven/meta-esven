@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://README;beginline=1;endline=22;md5=2687c5ebfd9cb284491
 
 DESCRIPTION = "Mainline u-boot bootloader"
 
-COMPATIBLE_MACHINE = "(pandaboard)"
+COMPATIBLE_MACHINE = "(pandaboard|panda-es)"
 
 DEFAULT_PREFERENCE = "-1"
 
