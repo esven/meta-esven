@@ -1,1 +1,0 @@
-PROVIDES_remove = "virtual/libgl virtual/mesa"
