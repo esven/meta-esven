@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenHR20 DB-Creation
+ConditionPathExists=!/tmp/hr20db.sqlite
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/php /home/hr20/create_db.php
+User=hr20
+Group=hr20
+
+[Install]
+WantedBy=multi-user.target
