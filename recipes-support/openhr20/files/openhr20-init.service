@@ -5,6 +5,13 @@ ConditionPathExists=!/tmp/hr20db.sqlite
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/php /home/hr20/create_db.php
+ExecStart=/bin/mkdir -p /tmp/openhr20/plots
+ExecStart=/home/hr20/create_rrd 1
+ExecStart=/home/hr20/create_rrd 2
+ExecStart=/home/hr20/create_rrd 3
+ExecStart=/home/hr20/create_rrd 4
+ExecStart=/home/hr20/create_rrd 5
+ExecStart=/home/hr20/create_rrd 6
 User=hr20
 Group=hr20
 

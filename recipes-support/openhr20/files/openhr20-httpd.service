@@ -8,7 +8,6 @@ Environment=LANG=C
 ExecStart=/usr/sbin/httpd -f /etc/apache2/httpd_openhr20.conf -DFOREGROUND -D PHP5 -k start
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillSignal=SIGCONT
-PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target

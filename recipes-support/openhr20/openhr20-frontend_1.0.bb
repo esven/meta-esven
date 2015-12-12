@@ -3,19 +3,28 @@ AUTHOR = "Sven Ebenfeld"
 HOMEPAGE = "http://www.mikrocontroller.net/articles/Heizungssteuerung_mit_Honeywell_HR20"
 
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM="file://COPYING;md5=59530bdf33659b29e73d4adb9f9f6552"
+LIC_FILES_CHKSUM="file://trunk/source/license.txt;md5=59530bdf33659b29e73d4adb9f9f6552"
 
-SRC_URI = "svn://svn.code.sf.net/p/openhr20/code;module=rfmsrc/frontend \
+SRC_URI = "git://github.com/OpenHR20/OpenHR20.git;protocol=https;branch=master \
 	file://httpd_openhr20.conf \
 	file://openhr20.service \
 	file://openhr20-init.service \
 	file://openhr20-httpd.service \
+	file://openhr20-plot-90days.service \
+	file://openhr20-plot-90days.timer \
+	file://openhr20-plot-30days.service \
+	file://openhr20-plot-30days.timer \
+	file://openhr20-plot-7days.service \
+	file://openhr20-plot-7days.timer \
+	file://openhr20-plot-3days.service \
+	file://openhr20-plot-3days.timer \
+	file://config.php \
 	"
-SRCREV = "368"
+SRCREV = "0092ef00b1d0f3046a658416e626b54b4b60f744"
 
 PR = "r0"
 
-S = "${WORKDIR}/rfmsrc/frontend"
+S = "${WORKDIR}/git"
 
 USERADD_PACKAGES = "${PN}"
 
@@ -24,7 +33,14 @@ GROUPADD_PARAM_${PN} = " hr20 "
 
 inherit allarch useradd systemd
 
-SYSTEMD_SERVICE_${PN} = "openhr20.service openhr20-init.service"
+SYSTEMD_SERVICE_${PN} = "\
+	openhr20.service \
+	openhr20-init.service \
+	openhr20-httpd.service \
+	openhr20-plot-90days.timer \
+	openhr20-plot-30days.timer \
+	openhr20-plot-7days.timer \
+	openhr20-plot-3days.timer"
 
 PACKAGES = "${PN}"
 
@@ -34,7 +50,7 @@ FILES_${PN} = " \
 	${systemd_unitdir}/system \
 	"
 
-RDEPENDS_${PN} = "apache2 php php-modphp php-cli php-cgi sqlite sqlite3 rrdtool"
+RDEPENDS_${PN} = "apache2 php php-modphp php-cli php-cgi sqlite sqlite3 rrdtool xorg-minimal-fonts"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
@@ -43,16 +59,29 @@ do_install () {
   install -m 0755 -d ${D}${sysconfdir}/apache2
   install ${WORKDIR}/httpd_openhr20.conf ${D}${sysconfdir}/apache2
   install -o hr20 -g hr20 -m 0755 -d ${D}/home/hr20
-  install -o hr20 -g hr20 -m 0644 ${S}/tools/daemon.php ${D}/home/hr20
-  install -o hr20 -g hr20 -m 0644 ${S}/tools/create_db.php ${D}/home/hr20
-  cp -r ${S}/www ${D}/home/hr20
+  install -o hr20 -g hr20 -m 0644 ${S}/rfmsrc/frontend/tools/daemon.php ${D}/home/hr20
+  install -o hr20 -g hr20 -m 0644 ${S}/rfmsrc/frontend/tools/create_db.php ${D}/home/hr20
+  install -o hr20 -g hr20 -m 0755 ${S}/rfmsrc/frontend/tools/create_rrd ${D}/home/hr20
+  install -o hr20 -g hr20 -m 0755 ${S}/rfmsrc/frontend/tools/plot ${D}/home/hr20
+  
+  sed -i 's/^IDS=.*/IDS=\"1 2 3 4 5 6\"/' ${D}/home/hr20/plot
+  
+  cp -r ${S}/rfmsrc/frontend/www ${D}/home/hr20
+  rm ${D}/home/hr20/www/config.php
+  install -o hr20 -g hr20 -m 0644 ${WORKDIR}/config.php ${D}/home/hr20/www/
+  (cd ${D}/home/hr20/www && ln -s /tmp/openhr20/plots plots)
   chown -R hr20:hr20 ${D}/home/hr20/www
-  sed -i 's/\$db = new SQLiteDatabase(\".*/\$db = new SQLiteDatabase(\"\/tmp\/hr20db.sqlite\")\;/' ${D}/home/hr20/daemon.php
-  sed -i 's/\$db = new SQLiteDatabase(\".*/\$db = new SQLiteDatabase(\"\/tmp\/hr20db.sqlite\")\;/' ${D}/home/hr20/create_db.php
-  sed -i 's/\$db = new SQLiteDatabase(\".*/\$db = new SQLiteDatabase(\"\/tmp\/hr20db.sqlite\")\;/' ${D}/home/hr20/www/config.php
   
   install -m 0755 -d ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-init.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-httpd.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-90days.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-90days.timer ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-30days.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-30days.timer ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-7days.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-7days.timer ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-3days.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-plot-3days.timer ${D}${systemd_unitdir}/system
 }

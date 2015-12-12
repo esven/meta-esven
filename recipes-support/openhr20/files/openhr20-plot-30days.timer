@@ -1,0 +1,9 @@
+[Unit]
+Description=Plot 3 day graph every 15min
+
+[Timer]
+OnBootSec=1minute
+OnUnitActiveSec=1day
+
+[Install]
+WantedBy=timers.target

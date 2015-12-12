@@ -1,0 +1,10 @@
+[Unit]
+Description=Plot 90 day graph
+ConditionPathExists=/tmp/openhr20/plots
+After=openhr20-init.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/hr20/plot 90
+User=hr20
+Group=hr20
