@@ -100,7 +100,12 @@ do_deploy_append() {
 	fi
 }
 
-ROOTFS_POSTPROCESS_COMMAND += " remove_unneeded_files; change_default_runlevel ; "
+remove_apache() {
+	find ${IMAGE_ROOTFS}${systemd_unitdir}/system/ -name apache2\* -exec rm '{}' \;
+	find ${IMAGE_ROOTFS}${systemd_unitdir}/system/ -name rrdcached\* -exec rm '{}' \;
+}
+
+ROOTFS_POSTPROCESS_COMMAND += " remove_unneeded_files; change_default_runlevel ;  remove_apache ; "
 # ROOTFS_POSTPROCESS_COMMAND_append_qemuall = " qemu_create_disk; "
 
 

@@ -4,9 +4,10 @@ After=openhr20-init.service
 
 [Service]
 Type=simple
+ExecStart=/bin/stty -F /dev/ttyUSB0 38400
 ExecStart=/usr/bin/php /home/hr20/daemon.php
 User=hr20
-Group=hr20
+Group=dialout
 
 [Install]
 WantedBy=multi-user.target

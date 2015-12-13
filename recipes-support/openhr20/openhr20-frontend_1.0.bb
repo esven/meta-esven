@@ -28,7 +28,7 @@ S = "${WORKDIR}/git"
 
 USERADD_PACKAGES = "${PN}"
 
-USERADD_PARAM_${PN} = " -g hr20 -d /home/hr20 -r -s /dev/null hr20"
+USERADD_PARAM_${PN} = " -g hr20 -G dialout -d /home/hr20 -r -s /dev/null hr20"
 GROUPADD_PARAM_${PN} = " hr20 "
 
 inherit allarch useradd systemd
@@ -50,7 +50,7 @@ FILES_${PN} = " \
 	${systemd_unitdir}/system \
 	"
 
-RDEPENDS_${PN} = "apache2 php php-modphp php-cli php-cgi sqlite sqlite3 rrdtool xorg-minimal-fonts"
+RDEPENDS_${PN} = "apache2 php php-modphp php-cli php-cgi sqlite3 rrdtool xorg-minimal-fonts"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
