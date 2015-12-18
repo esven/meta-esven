@@ -9,6 +9,7 @@ SRC_URI = "git://github.com/OpenHR20/OpenHR20.git;protocol=https;branch=master \
 	file://httpd_openhr20.conf \
 	file://openhr20.service \
 	file://openhr20-init.service \
+	file://openhr20-setttyspeed.service \
 	file://openhr20-httpd.service \
 	file://openhr20-plot-90days.service \
 	file://openhr20-plot-90days.timer \
@@ -36,6 +37,7 @@ inherit allarch useradd systemd
 SYSTEMD_SERVICE_${PN} = "\
 	openhr20.service \
 	openhr20-init.service \
+	openhr20-setttyspeed.service \
 	openhr20-httpd.service \
 	openhr20-plot-90days.timer \
 	openhr20-plot-30days.timer \
@@ -75,6 +77,7 @@ do_install () {
   install -m 0755 -d ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-init.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-setttyspeed.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-httpd.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-plot-90days.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-plot-90days.timer ${D}${systemd_unitdir}/system

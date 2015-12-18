@@ -1,13 +1,15 @@
 [Unit]
 Description=OpenHR20 Daemon
-After=openhr20-init.service
+After=openhr20-init.service openhr20-setttyspeed.service dev-ttyUSB0.device
+Wants=dev-ttyUSB0.device
 
 [Service]
 Type=simple
-ExecStart=/bin/stty -F /dev/ttyUSB0 38400
 ExecStart=/usr/bin/php /home/hr20/daemon.php
 User=hr20
 Group=dialout
+Restart=always
+RestartSec=30s
 
 [Install]
 WantedBy=multi-user.target
