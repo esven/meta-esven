@@ -19,7 +19,12 @@ SRC_URI = "git://github.com/OpenHR20/OpenHR20.git;protocol=https;branch=master \
 	file://openhr20-plot-7days.timer \
 	file://openhr20-plot-3days.service \
 	file://openhr20-plot-3days.timer \
+	file://openhr20-backup.service \
+	file://openhr20-backup.timer \
 	file://config.php \
+	file://backup_openhr20.sh \
+	file://init_openhr20.sh \
+	file://openhr20-volatile.conf \
 	"
 SRCREV = "0092ef00b1d0f3046a658416e626b54b4b60f744"
 
@@ -42,13 +47,14 @@ SYSTEMD_SERVICE_${PN} = "\
 	openhr20-plot-90days.timer \
 	openhr20-plot-30days.timer \
 	openhr20-plot-7days.timer \
-	openhr20-plot-3days.timer"
+	openhr20-plot-3days.timer \
+	openhr20-backup.timer"
 
 PACKAGES = "${PN}"
 
 FILES_${PN} = " \
 	/home/hr20 \
-	${sysconfdir}/apache2 \
+	${sysconfdir} \
 	${systemd_unitdir}/system \
 	"
 
@@ -58,9 +64,13 @@ do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
 do_install () {
+  install -m 0755 -d ${D}${sysconfdir}/tmpfiles.d
+  install ${WORKDIR}/openhr20-volatile.conf ${D}${sysconfdir}/tmpfiles.d
   install -m 0755 -d ${D}${sysconfdir}/apache2
   install ${WORKDIR}/httpd_openhr20.conf ${D}${sysconfdir}/apache2
   install -o hr20 -g hr20 -m 0755 -d ${D}/home/hr20
+  install -o hr20 -g hr20 -m 0755 ${WORKDIR}/backup_openhr20.sh ${D}/home/hr20
+  install -o hr20 -g hr20 -m 0755 ${WORKDIR}/init_openhr20.sh ${D}/home/hr20
   install -o hr20 -g hr20 -m 0644 ${S}/rfmsrc/frontend/tools/daemon.php ${D}/home/hr20
   install -o hr20 -g hr20 -m 0644 ${S}/rfmsrc/frontend/tools/create_db.php ${D}/home/hr20
   install -o hr20 -g hr20 -m 0755 ${S}/rfmsrc/frontend/tools/create_rrd ${D}/home/hr20
@@ -87,4 +97,6 @@ do_install () {
   install -m 0644 ${WORKDIR}/openhr20-plot-7days.timer ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-plot-3days.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-plot-3days.timer ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-backup.timer ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/openhr20-backup.service ${D}${systemd_unitdir}/system
 }

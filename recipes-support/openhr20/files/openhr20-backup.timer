@@ -1,0 +1,9 @@
+[Unit]
+Description=Backup OpenHR20 Databases once an hour
+
+[Timer]
+OnBootSec=1hour
+OnUnitActiveSec=1hour
+
+[Install]
+WantedBy=timers.target

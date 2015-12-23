@@ -1,0 +1,9 @@
+[Unit]
+Description=Backup OpenHR20 Databases
+After=openhr20-init.service systemd-tmpfiles-setup.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/hr20/backup_openhr20.sh
+User=hr20
+Group=hr20

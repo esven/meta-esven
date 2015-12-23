@@ -1,17 +1,11 @@
 [Unit]
 Description=OpenHR20 DB-Creation
 ConditionPathExists=!/tmp/hr20db.sqlite
+After=systemd-tmpfiles-setup.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/php /home/hr20/create_db.php
-ExecStart=/bin/mkdir -p /tmp/openhr20/plots
-ExecStart=/home/hr20/create_rrd 1
-ExecStart=/home/hr20/create_rrd 2
-ExecStart=/home/hr20/create_rrd 3
-ExecStart=/home/hr20/create_rrd 4
-ExecStart=/home/hr20/create_rrd 5
-ExecStart=/home/hr20/create_rrd 6
+ExecStart=/home/hr20/init_openhr20.sh
 User=hr20
 Group=hr20
 
