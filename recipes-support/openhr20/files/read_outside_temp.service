@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenHR20 Daemon
+After=openhr20-init.service
+
+[Service]
+Type=simple
+ExecStart=/home/hr20/read_outside_temp.sh
+User=root
+Group=root
+Restart=always
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target

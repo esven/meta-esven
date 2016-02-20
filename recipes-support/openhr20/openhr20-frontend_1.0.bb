@@ -6,6 +6,9 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM="file://trunk/source/license.txt;md5=59530bdf33659b29e73d4adb9f9f6552"
 
 SRC_URI = "git://github.com/OpenHR20/OpenHR20.git;protocol=https;branch=master \
+	file://0001-Add-outside-temperature-to-all-graphs.patch \
+	file://read_outside_temp.sh \
+	file://read_outside_temp.service \
 	file://httpd_openhr20.conf \
 	file://openhr20.service \
 	file://openhr20-init.service \
@@ -41,6 +44,7 @@ inherit allarch useradd systemd
 
 SYSTEMD_SERVICE_${PN} = "\
 	openhr20.service \
+	read_outside_temp.service \
 	openhr20-init.service \
 	openhr20-setttyspeed.service \
 	openhr20-httpd.service \
@@ -71,6 +75,7 @@ do_install () {
   install -o hr20 -g hr20 -m 0755 -d ${D}/home/hr20
   install -o hr20 -g hr20 -m 0755 ${WORKDIR}/backup_openhr20.sh ${D}/home/hr20
   install -o hr20 -g hr20 -m 0755 ${WORKDIR}/init_openhr20.sh ${D}/home/hr20
+  install -o root -g root -m 0755 ${WORKDIR}/read_outside_temp.sh ${D}/home/hr20
   install -o hr20 -g hr20 -m 0644 ${S}/rfmsrc/frontend/tools/daemon.php ${D}/home/hr20
   install -o hr20 -g hr20 -m 0644 ${S}/rfmsrc/frontend/tools/create_db.php ${D}/home/hr20
   install -o hr20 -g hr20 -m 0755 ${S}/rfmsrc/frontend/tools/create_rrd ${D}/home/hr20
@@ -86,6 +91,7 @@ do_install () {
   
   install -m 0755 -d ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20.service ${D}${systemd_unitdir}/system
+  install -m 0644 ${WORKDIR}/read_outside_temp.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-init.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-setttyspeed.service ${D}${systemd_unitdir}/system
   install -m 0644 ${WORKDIR}/openhr20-httpd.service ${D}${systemd_unitdir}/system

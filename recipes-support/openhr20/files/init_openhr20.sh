@@ -18,3 +18,6 @@ for id in `echo $IDS`; do
   fi
 done
 
+if [ -f "/var/backups/openhr20/outside_temp.rrd.gz" ]; then
+    zcat /var/backups/openhr20/outside_temp.rrd.gz | rrdtool restore - /tmp/openhr20/outside_temp.rrd -f
+fi

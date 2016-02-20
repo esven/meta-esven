@@ -1,0 +1,38 @@
+From 44d6eb8ea5a35dd7f0952f55fea23f17b39a388e Mon Sep 17 00:00:00 2001
+From: Sven Ebenfeld <sven.ebenfeld@gmail.com>
+Date: Sat, 20 Feb 2016 16:09:32 +0100
+Subject: [PATCH 1/2] Add outside temperature to all graphs
+
+Signed-off-by: Sven Ebenfeld <sven.ebenfeld@gmail.com>
+---
+ rfmsrc/frontend/tools/plot | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/rfmsrc/frontend/tools/plot b/rfmsrc/frontend/tools/plot
+index 05859a4..00a8083 100755
+--- a/rfmsrc/frontend/tools/plot
++++ b/rfmsrc/frontend/tools/plot
+@@ -34,12 +34,19 @@ for id in $IDS; do
+ 	DEF:v=${RRD_HOME}/openhr20_${id}.rrd:valve:MAX \
+ 	DEF:r=${RRD_HOME}/openhr20_${id}.rrd:real:AVERAGE \
+ 	DEF:w=${RRD_HOME}/openhr20_${id}.rrd:wanted:MAX \
++	DEF:osmi=${RRD_HOME}/outside_temp.rrd:outside:MIN \
++	DEF:osav=${RRD_HOME}/outside_temp.rrd:outside:AVERAGE \
++	DEF:osma=${RRD_HOME}/outside_temp.rrd:outside:MAX \
+ 	CDEF:nr=r,100,/ \
+ 	CDEF:nw=w,100,/ \
+ 	CDEF:nv=v,20,/,16,+ \
+ 	GPRINT:nr:AVERAGE:"Avg. Temp\: %6.2lf %s" \
+ 	GPRINT:nw:AVERAGE:"Avg. Wanted\: %6.2lf %s" \
+ 	GPRINT:v:AVERAGE:"Avg. Valve\: %6.2lf %s\n" \
++	COMMENT:"Outside\: " \
++	GPRINT:osmi:MIN:"Min. Temp\: %6.2lf %s" \
++	GPRINT:osav:AVERAGE:"Avg. Temp\: %6.2lf %s" \
++	GPRINT:osma:MAX:"Max. Temp\: %6.2lf %s\n" \
+ 	COMMENT:"Legend\:" \
+-	AREA:nw#b9FFb9 LINE1:nw#00FF00:"Wanted" LINE2:nv#0000FF:"Valve" LINE2:nr#FF0000:"Real"
++	AREA:nw#b9FFb9 LINE1:nw#00FF00:"Wanted" LINE2:osav#00AAFF:"Outside" LINE2:nv#0000FF:"Valve" LINE2:nr#FF0000:"Real"
+ done
+-- 
+1.9.1
+
